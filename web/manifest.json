@@ -1,11 +1,11 @@
 {
-    "name": "code_imager",
-    "short_name": "code_imager",
+    "name": "Codeimager",
+    "short_name": "Codeimager",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Generate beautiful code images effortlessly with Codimager",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

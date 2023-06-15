@@ -5,12 +5,16 @@ import 'dart:ui' as ui;
 final screenWidth = (ui.window.physicalSize.width / ui.window.devicePixelRatio);
 final screenHeight =
     (ui.window.physicalSize.height / ui.window.devicePixelRatio);
+
 //systemColor
 const bgColor = Color(0xff22212c);
 const bgColor1 = Color(0xff151718);
 const playgroundColor = Color.fromARGB(255, 27, 27, 27);
 const borderColor = Color.fromARGB(255, 102, 102, 102);
 const systemColor = Color(0xff896740);
+const descriptionColor = Color(0xfff9e135);
+const elementAccentColor = Color(0xffdf9d39);
+const dropDownColor = Color(0xff1b1b1b);
 //Colors
 const keywordColor = Color(0xffff80bf);
 const methodColor = Color(0xff79ff80);
@@ -25,12 +29,27 @@ const enumColor = Color.fromARGB(255, 161, 168, 108);
 const widgetColor = Color(0xff4fc7fd);
 
 //textStyles
-const folderTitle = TextStyle(
-    fontSize: 12,
-    color: Colors.white,
+const descriptionStyle = TextStyle(
+    fontSize: 20,
+    color: descriptionColor,
     fontFamily: "DMSans",
     wordSpacing: 1,
     fontWeight: FontWeight.bold,
+    letterSpacing: 1.2);
+
+const folderTitle = TextStyle(
+    fontSize: 12,
+    color: Colors.white24,
+    fontFamily: "DMSans",
+    wordSpacing: 1,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1.2);
+const elementStyle = TextStyle(
+    fontSize: 15,
+    color: elementAccentColor,
+    fontFamily: "DMSans",
+    wordSpacing: 1,
+    fontWeight: FontWeight.w800,
     letterSpacing: 1.2);
 
 const btnText = TextStyle(

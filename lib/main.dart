@@ -4,7 +4,9 @@ import 'package:code_imager/utils/image-data.dart';
 import 'package:code_imager/utils/image_downloader.dart';
 
 import 'package:code_text_field/code_text_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:meta_seo/meta_seo.dart';
 
 import 'components/loveStyled_titlebar.dart';
 import 'components/macStyled_titlebar.dart';
@@ -12,6 +14,9 @@ import 'components/sweatstyled_titlebar.dart';
 import 'constants/colors_styles.dart';
 
 void main() {
+  if (kIsWeb) {
+    MetaSEO().config();
+  }
   runApp(MyApp());
 }
 
@@ -20,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Code field',
+      title: 'Codimager',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
@@ -39,9 +44,14 @@ class _CodeEditorState extends State<CodeEditor> {
   late GlobalKey key1;
   Uint8List? bytes1;
   String? selectedFonts;
-  List<Color> bgColorList = [const Color(0xff22212c), const Color(0xff151718)];
+  List<Color> bgColorList = [
+    const Color(0xff22212c),
+    const Color(0xff151718),
+    const Color(0xff282a36),
+    const Color(0xFF031C35)
+  ];
   late double userWidth;
-
+// double? userFontsize;
   List<Widget> titlebarList = [
     const MacStyled(),
     const SweatStyled(),
@@ -56,6 +66,7 @@ class _CodeEditorState extends State<CodeEditor> {
     dropdownValue = bgColorList.first;
     userWidth = screenWidth * 0.7;
     titlebarStyle = titlebarList.first;
+    // userFontsize = 20;
     const source = "void main() {\n    print(\"Hello, world!\");\n}";
     // Instantiate the CodeController
     _codeController = CodeController(
@@ -378,47 +389,62 @@ class _CodeEditorState extends State<CodeEditor> {
     final deviceOrientation = MediaQuery.of(context).orientation;
 
     var titleBarDropDown = Container(
-        // width: deviceOrientation == Orientation.landscape
-        //     ? (scrteenWidth / 2 - 10) / 4 - 10
-        //     : (scrteenWidth - 20) / 4 - 10 - 25,
-        // height: screenHeight,
-
+        height: 50,
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            border: Border.all(
+              width: 1,
+              color: descriptionColor,
+            ),
+            borderRadius: BorderRadius.circular(5)),
         child: DropdownButtonHideUnderline(
-      child: DropdownButton(
-          hint: Text("Titlebar Style"),
-          value: titlebarStyle,
-          onChanged: (value) {
-            setState(() {
-              titlebarStyle = value as Widget;
-            });
-          },
-          items: titlebarList.map<DropdownMenuItem<Widget>>(
-            (Widget value) {
-              return DropdownMenuItem<Widget>(
-                  value: value,
-                  child: Row(
-                    children: [
-                      Container(
-                        child: value,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10)),
-                      )
-                    ],
-                  ));
-            },
-          ).toList()),
-    ));
+          child: DropdownButton(
+              dropdownColor: dropDownColor,
+              icon: const Icon(
+                Icons.arrow_drop_down,
+                color: elementAccentColor,
+              ),
+              value: titlebarStyle,
+              onChanged: (value) {
+                setState(() {
+                  titlebarStyle = value as Widget;
+                });
+              },
+              items: titlebarList.map<DropdownMenuItem<Widget>>(
+                (Widget value) {
+                  return DropdownMenuItem<Widget>(
+                      value: value,
+                      child: Row(
+                        children: [
+                          Container(
+                            child: value,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)),
+                          )
+                        ],
+                      ));
+                },
+              ).toList()),
+        ));
 
     var terminalColor = Container(
-      // width: deviceOrientation == Orientation.landscape
-      //     ? (scrteenWidth / 2 - 10) / 4 - 10
-      //     : (scrteenWidth - 20) / 4 - 10 - 25,
-      // height: screenHeight,
+      height: 50,
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(2.8),
-      ),
+          border: Border.all(
+            width: 1,
+            color: descriptionColor,
+          ),
+          borderRadius: BorderRadius.circular(5)),
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
+            dropdownColor: dropDownColor,
+            icon: const Icon(
+              Icons.arrow_drop_down,
+              color: elementAccentColor,
+            ),
             elevation: 0,
             hint: const Text("Colors"),
             value: dropdownValue,
@@ -434,11 +460,13 @@ class _CodeEditorState extends State<CodeEditor> {
                     child: Row(
                       children: [
                         Container(
-                          width: 20,
                           height: 20,
+                          width: 60,
                           decoration: BoxDecoration(
+                              // border:
+                              //     Border.all(width: 2, color: descriptionColor),
                               color: value,
-                              borderRadius: BorderRadius.circular(10)),
+                              borderRadius: BorderRadius.circular(5)),
                         )
                       ],
                     ));
@@ -447,7 +475,7 @@ class _CodeEditorState extends State<CodeEditor> {
       ),
     );
 
-    var inkWell = InkWell(
+    var downloadImage = InkWell(
       onTap: () async {
         //add method to download code Image
         final bytes1 = await Utils.capture(key1);
@@ -461,20 +489,27 @@ class _CodeEditorState extends State<CodeEditor> {
         child: Container(
           // width: 30,
           // height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(2.8)),
+          height: 50,
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          margin: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border.all(
+                width: 1,
+                color: descriptionColor,
+              ),
+              borderRadius: BorderRadius.circular(5)),
           child: Center(
               child: Image.asset(
             "assets/icons/download.png",
             fit: BoxFit.cover,
-            color: Colors.white,
+            color: elementAccentColor,
             width: 30,
             height: 30,
           )),
         ),
       ),
     );
-    var codeToImage = CodeToImage(
+    var codeEditor = CodeToImage(
       builder: (key) {
         this.key1 = key;
         return Container(
@@ -484,7 +519,7 @@ class _CodeEditorState extends State<CodeEditor> {
             Color.fromARGB(255, 219, 98, 139),
             Color.fromARGB(255, 150, 109, 177)
           ])),
-          padding: EdgeInsets.all(70),
+          padding: const EdgeInsets.all(70),
           child: Container(
             padding:
                 const EdgeInsets.all(10), //margin: const EdgeInsets.all(10),
@@ -504,7 +539,7 @@ class _CodeEditorState extends State<CodeEditor> {
                     cursorColor: keywordColor,
                     //horizontalScroll: true,
                     textStyle: const TextStyle(
-                        fontFamily: "Elmessiri",
+                        fontFamily: "UbuntuMono",
                         letterSpacing: 1,
                         height: 1.5,
                         fontSize: 20),
@@ -516,60 +551,178 @@ class _CodeEditorState extends State<CodeEditor> {
         );
       },
     );
+    var widthSlider = Container(
+      height: 50,
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          border: Border.all(
+            width: 1,
+            color: descriptionColor,
+          ),
+          borderRadius: BorderRadius.circular(5)),
+      child: Row(
+        children: [
+          const Text("Width:", style: elementStyle),
+          SizedBox(
+            width: 60,
+            child: SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                  overlayShape: SliderComponentShape.noOverlay,
+                  trackHeight: 10),
+              child: Slider(
+                activeColor: elementAccentColor,
+                inactiveColor: elementAccentColor.withOpacity(0.2),
+                min: screenWidth / 2,
+                max: screenWidth * 0.7,
+                value: userWidth,
+                onChanged: (double newUserWidth) {
+                  setState(() {
+                    userWidth = newUserWidth;
+                  });
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // var fontSlider = Row(
+    //   children: [
+    //     const Text(
+    //       "Font:",
+    //       style: folderTitle,
+    //     ),
+    //     SizedBox(
+    //       width: 60,
+    //       child: SliderTheme(
+    //         data: SliderTheme.of(context).copyWith(
+    //             overlayShape: SliderComponentShape.noOverlay, trackHeight: 10),
+    //         child: Slider(
+    //           activeColor: bgColor,
+    //           min: 15,
+    //           max: 20,
+    //           value: userFontsize as double,
+    //           onChanged: (double newUserFont) {
+    //             setState(() {
+    //               userFontsize = newUserFont;
+    //             });
+    //           },
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
+    MetaSEO meta = MetaSEO();
+    meta.facebookAppID(facebookAppID: 'Codimager');
+    meta.ogTitle(ogTitle: 'Codimage');
+    meta.ogDescription(
+        ogDescription:
+            'Generate beautiful code images effortlessly with Codimager');
+    meta.ogImage(
+        ogImage:
+            'https://github.com/MSatyam-Mishra/image-collection/assets/12216430/65e4da42-af10-4a56-bce7-c8f76cccb5c1');
+
+    // here you can add any tags does not exist in the package as this
+    meta.propertyContent(
+        property: 'og:site_name',
+        content: 'Generate beautiful code images effortlessly with Codimager');
+
+    // or if you want to add twitter card meta tags just as the following
+    meta.twitterCard(twitterCard: TwitterCard.summaryLargeImage);
+    meta.twitterTitle(twitterTitle: 'Codimager');
+    meta.twitterDescription(
+        twitterDescription:
+            'Generate beautiful code images effortlessly with Codimager');
+    meta.twitterImage(
+        twitterImage:
+            'https://github.com/MSatyam-Mishra/image-collection/assets/12216430/65e4da42-af10-4a56-bce7-c8f76cccb5c1');
+
+    // here you can add any tags does not exist in the package as this
+    meta.nameContent(name: 'twitter:site', content: '@an___earthling');
+    // Add meta seo data for web app as you want
+    meta.author(author: 'Satyam Mishra');
+    meta.description(
+        description:
+            'Generate beautiful code images effortlessly with Codimager');
+    meta.keywords(
+        keywords:
+            'Flutter code images, Dart, Web, Dart code visualization, Code snippets for Flutter, Visualize Flutter code, Dart code images, Code visualization tool, Flutter code showcase, Generate code visuals, Dart code graphics, Flutter code snapshots, Code image generator, Visual code representation, Code art for Flutter, Dart code visualization tool, Code to image converter, Flutter code graphics, Code screenshot generator, Dart code snapshots, Code illustration for Flutter, Visualize Dart code, The best code image generator, The best Flutter code visualization, The best Dart code image tool, The best code image generator for Dart, Beautiful code image generator, Beautiful Flutter code visualization, Beautiful Dart code image tool, Beautiful code visualization for Flutter, Beautiful code images for Dart');
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Padding(
             padding: const EdgeInsets.only(top: 20),
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/icons/code-3.png"),
+                Image.asset("assets/logo.png"),
                 const SizedBox(
-                  width: 10,
+                  height: 10,
                 ),
                 const Text(
-                  "Codimager",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "GrandifloraOne",
-                      letterSpacing: 1.2,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 32),
-                )
+                  "Generate Beautiful code images effortlessly",
+                  style: descriptionStyle,
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 25),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7), color: playgroundColor),
-            width: userWidth,
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        terminalColor,
-                        titleBarDropDown,
-                        inkWell,
-                      ],
+          Center(
+            child: deviceOrientation == Orientation.landscape
+                ? Container(
+                    margin: const EdgeInsets.only(top: 50),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        color: playgroundColor),
+                    width: userWidth,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                widthSlider,
+                                // fontSlider,
+                                terminalColor,
+                                titleBarDropDown,
+                                downloadImage,
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: screenWidth * 0.7,
+                            decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(7),
+                                    bottomLeft: Radius.circular(7)),
+                                gradient: LinearGradient(colors: [
+                                  Color.fromARGB(255, 219, 98, 139),
+                                  Color.fromARGB(255, 150, 109, 177)
+                                ])),
+                            child: SizedBox(
+                              width: userWidth,
+                              //height: screenHeight - 40,
+                              child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                      bottomRight: Radius.circular(7),
+                                      bottomLeft: Radius.circular(7)),
+                                  child: Center(child: codeEditor)),
+                            ),
+                          )
+                        ]),
+                  )
+                : const Center(
+                    child: Text(
+                      "Currently Codimager only works on Landcape mode",
+                      style: folderTitle,
                     ),
                   ),
-                  SizedBox(
-                    width: userWidth,
-                    //height: screenHeight - 40,
-                    child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(7)),
-                        child: Center(child: codeToImage)),
-                  )
-                ]),
           )
         ]),
       ),
